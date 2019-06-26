@@ -1,0 +1,1 @@
+Ce projet est un éditeur géométrique (graphique) écrit en java
