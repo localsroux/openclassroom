@@ -10,8 +10,8 @@ package model;
  */
 public class DemiDroite extends ElementGeometrique {
 
-    private Point A;
-    private Point B;
+    private final Point A;
+    private final Point B;
 
     public DemiDroite(Point p1, Point p2) {
         super();

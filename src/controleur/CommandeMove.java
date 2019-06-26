@@ -12,11 +12,11 @@ import model.Modele;
  */
 public class CommandeMove extends Commande {
 
-    private int cible;
-    private int xDep;
-    private int yDep;
-    private int x;
-    private int y;
+    private final int cible;
+    private final int xDep;
+    private final int yDep;
+    private final int x;
+    private final int y;
 
     public CommandeMove(int Selected, int x, int y, int xDep, int yDep) {
         cible = Selected;

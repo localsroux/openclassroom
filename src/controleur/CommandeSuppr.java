@@ -14,7 +14,7 @@ import model.Modele;
  */
 public class CommandeSuppr extends Commande {
 
-    private List<ElementGeometrique> remove;
+    private final List<ElementGeometrique> remove;
 
     public CommandeSuppr(List<ElementGeometrique> remove) {
         this.remove = remove;

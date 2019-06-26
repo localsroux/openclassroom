@@ -13,7 +13,7 @@ import model.*;
  */
 public class CommandeAdd extends Commande {
 
-    private List<ElementGeometrique> toAdd;
+    private final List<ElementGeometrique> toAdd;
 
     public CommandeAdd(List<ElementGeometrique> a) {
         toAdd = a;

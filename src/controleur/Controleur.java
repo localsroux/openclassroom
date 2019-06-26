@@ -61,7 +61,7 @@ public class Controleur {
     }
     private Etat etat;
     private Modele modele;
-    private VuePrincipale vue;
+    private final VuePrincipale vue;
     private int PointA;
     private int PointB;
     private int PointC;
@@ -74,7 +74,7 @@ public class Controleur {
     private int yDep;
     private int xInit;
     private int yInit;
-    private List<Commande> commandes;
+    private final List<Commande> commandes;
     private int last;
 
     public Controleur() {

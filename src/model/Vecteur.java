@@ -13,8 +13,8 @@ import java.util.TreeMap;
  */
 public class Vecteur extends ElementGeometrique {
 
-    private Point A;
-    private Point B;
+    private final Point A;
+    private final Point B;
 
     public Vecteur(Point p1, Point p2) {
         super();

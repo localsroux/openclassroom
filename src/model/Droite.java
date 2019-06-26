@@ -13,7 +13,7 @@ import java.util.TreeMap;
  */
 public class Droite extends ElementGeometrique {
 
-    private Point A;
+    private final Point A;
     private Point B;
 
     public Droite(Point p1, Point p2) {

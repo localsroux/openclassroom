@@ -13,8 +13,8 @@ import java.util.TreeMap;
  */
 public class Segment extends ElementGeometrique {
 
-    private Point A;
-    private Point B;
+    private final Point A;
+    private final Point B;
 
     public Segment(Point p1, Point p2) {
         super();

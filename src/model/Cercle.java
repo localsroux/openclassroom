@@ -13,8 +13,8 @@ import java.util.TreeMap;
  */
 public class Cercle extends ElementGeometrique {
 
-    private Point mycentre;
-    private Point pointDef;
+    private final Point mycentre;
+    private final Point pointDef;
 
     public Cercle(Point c, Point d) {
         super();
