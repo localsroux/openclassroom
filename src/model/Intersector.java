@@ -45,8 +45,8 @@ public class Intersector {
         demidroite2 = null;
         segment1 = null;
         segment2 = null;
-        x_intersection = new ArrayList<Double>();
-        y_intersection = new ArrayList<Double>();
+        x_intersection = new ArrayList<>();
+        y_intersection = new ArrayList<>();
     }
 
     public void visitePoint(Point p) {
@@ -526,7 +526,7 @@ public class Intersector {
     }
 
     private static List<Double> X_interCercleLigne(double xA, double yA, double xB, double yB, double xC, double yC, double r) {
-        List<Double> ret = new ArrayList<Double>();
+        List<Double> ret = new ArrayList<>();
 
         if (xA == xB) {
             if (coupeCercleLigne(xA, yA, xB, yB, xC, yC, r)) {
@@ -552,7 +552,7 @@ public class Intersector {
     }
 
     private static List<Double> Y_interCercleLigne(double xA, double yA, double xB, double yB, double xC, double yC, double r) {
-        List<Double> ret = new ArrayList<Double>();
+        List<Double> ret = new ArrayList<>();
         List<Double> X = X_interCercleLigne(xA, yA, xB, yB, xC, yC, r);
         if (xA == xB && !X.isEmpty()) {
             double x = X.get(0);
@@ -561,19 +561,20 @@ public class Intersector {
             ret.add(y1);
             ret.add(y2);
         } else {
-            for (Double x : X) {
-
+            X.stream().map((x) -> {
                 double m = (yB - yA) / (xB - xA);
                 double p = yB - m * xB;
                 double y = m * x + p;
+                return y;
+            }).forEachOrdered((y) -> {
                 ret.add(y);
-            }
+            });
         }
         return ret;
     }
 
     private static List<Double> X_interCercleCercle(double xC, double yC, double rayon, double xC0, double yC0, double rayon0) {
-        List<Double> ret = new ArrayList<Double>();
+        List<Double> ret = new ArrayList<>();
         double a = 2 * (xC0 - xC);
         double b = 2 * (yC0 - yC);
         double c = (xC0 - xC) * (xC0 - xC) + (yC0 - yC) * (yC0 - yC) + rayon * rayon - rayon0 * rayon0;
@@ -598,7 +599,7 @@ public class Intersector {
 
     private static List<Double> Y_interCercleCercle(double xC, double yC, double rayon, double xC0, double yC0, double rayon0) {
 
-        List<Double> ret = new ArrayList<Double>();
+        List<Double> ret = new ArrayList<>();
         double a = 2 * (xC0 - xC);
         double b = 2 * (yC0 - yC);
         double c = (xC0 - xC) * (xC0 - xC) + (yC0 - yC) * (yC0 - yC) + rayon * rayon - rayon0 * rayon0;

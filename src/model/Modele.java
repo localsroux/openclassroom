@@ -16,7 +16,7 @@ public class Modele {
     private Map<Integer, ElementGeometrique> ensemble;
 
     public Modele() {
-        ensemble = new TreeMap<Integer, ElementGeometrique>();
+        ensemble = new TreeMap<>();
     }
 
     public ElementGeometrique get(Integer i) {
@@ -33,7 +33,7 @@ public class Modele {
     }
 
     public List<ElementGeometrique> remove(Integer i) {
-        List<ElementGeometrique> ret = new ArrayList<ElementGeometrique>();
+        List<ElementGeometrique> ret = new ArrayList<>();
         ElementGeometrique e = ensemble.remove(i);
 
         if (e != null) {
@@ -57,30 +57,26 @@ public class Modele {
 
     public void dessine(Dessinateur d) {
         d.blanchit();
-        for (ElementGeometrique e : ensemble.values()) {
+        ensemble.values().forEach((e) -> {
             e.dessine(d);
-        }
+        });
     }
 
     public List<Integer> getFromPosition(double x, double y) {
-        List<Integer> ret = new ArrayList<Integer>();
-        for (Integer e : ensemble.keySet()) {
-            if (ensemble.get(e).isOn(x, y)) {
-                ret.add(e);
-            }
-        }
+        List<Integer> ret = new ArrayList<>();
+        ensemble.keySet().stream().filter((e) -> (ensemble.get(e).isOn(x, y))).forEachOrdered((e) -> {
+            ret.add(e);
+        });
         return ret;
     }
 
     public int addPoint(int x, int y) {
         double newX = x;
         double newY = y;
-        List<Integer> near = new ArrayList<Integer>();
-        for (Integer e : ensemble.keySet()) {
-            if (ensemble.get(e).isOn(x, y)) {
-                near.add(e);
-            }
-        }
+        List<Integer> near = new ArrayList<>();
+        ensemble.keySet().stream().filter((e) -> (ensemble.get(e).isOn(x, y))).forEachOrdered((e) -> {
+            near.add(e);
+        });
         if (near.size() == 1) {
             newX = ensemble.get(near.get(0)).getXnear(x, y);
             newY = ensemble.get(near.get(0)).getYnear(x, y);
@@ -111,7 +107,7 @@ public class Modele {
         this.add(p2);
         Vecteur nv = new Vecteur(p, p2);
         this.add(nv);
-        List<Integer> ret = new ArrayList<Integer>();
+        List<Integer> ret = new ArrayList<>();
         ret.add(p2.getID());
         ret.add(nv.getID());
         return ret;
@@ -126,7 +122,7 @@ public class Modele {
         this.add(p2);
         Droite dp = new Droite(p, p2);
         this.add(dp);
-        List<Integer> ret = new ArrayList<Integer>();
+        List<Integer> ret = new ArrayList<>();
         ret.add(p2.getID());
         ret.add(dp.getID());
         return ret;
@@ -141,7 +137,7 @@ public class Modele {
         this.add(p2);
         Droite dp = new Droite(p, p2);
         this.add(dp);
-        List<Integer> ret = new ArrayList<Integer>();
+        List<Integer> ret = new ArrayList<>();
         ret.add(p2.getID());
         ret.add(dp.getID());
         return ret;
@@ -166,7 +162,7 @@ public class Modele {
         this.add(p2);
         Droite dp = new Droite(M, p2);
         this.add(dp);
-        List<Integer> ret = new ArrayList<Integer>();
+        List<Integer> ret = new ArrayList<>();
         ret.add(M.ID);
         ret.add(p2.ID);
         ret.add(dp.ID);
@@ -193,7 +189,7 @@ public class Modele {
         this.add(D);
         Droite bis = new Droite(B, D);
         this.add(bis);
-        List<Integer> ret = new ArrayList<Integer>();
+        List<Integer> ret = new ArrayList<>();
         ret.add(D.ID);
         ret.add(bis.ID);
         return ret;
@@ -204,11 +200,11 @@ public class Modele {
     }
 
     public void saveFile(String chemin) throws IOException {
-        BufferedWriter file = new BufferedWriter(new FileWriter(new File(chemin), false));
-        for (Integer k : ensemble.keySet()) {
-            file.append(ensemble.get(k).toString());
-            file.newLine();
+        try (BufferedWriter file = new BufferedWriter(new FileWriter(new File(chemin), false))) {
+            for (Integer k : ensemble.keySet()) {
+                file.append(ensemble.get(k).toString());
+                file.newLine();
+            }
         }
-        file.close();
     }
 }

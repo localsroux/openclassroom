@@ -25,8 +25,8 @@ public abstract class ElementGeometrique {
     protected ElementGeometrique() {
         this.ID = lastID;
         lastID++;
-        dependants = new ArrayList<Integer>();
-        contenus = new TreeMap<Integer, ElementGeometrique>();
+        dependants = new ArrayList<>();
+        contenus = new TreeMap<>();
     }
 
     public final int getID() {
@@ -94,262 +94,225 @@ public abstract class ElementGeometrique {
     }
 
     public static Map<Integer, ElementGeometrique> loadFile(String chemin) throws Exception {
-        Map<Integer, ElementGeometrique> ret = new TreeMap<Integer, ElementGeometrique>();
-        Map<Integer, List<Integer>> relationContenus = new TreeMap<Integer, List<Integer>>();
-        Map<Integer, List<Integer>> relationDependants = new TreeMap<Integer, List<Integer>>();
+        Map<Integer, ElementGeometrique> ret = new TreeMap<>();
+        Map<Integer, List<Integer>> relationContenus = new TreeMap<>();
+        Map<Integer, List<Integer>> relationDependants = new TreeMap<>();
         BufferedReader file = new BufferedReader(new FileReader(chemin));
         String line = file.readLine();
         while (line != null) {
             String[] parts = line.split(" ");
             if (parts.length > 1) {
-                if (parts[0].equals("POINT")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-
-                    int newId = Integer.parseInt(parts[1]);
-                    double px = Double.parseDouble(parts[2]);
-                    double py = Double.parseDouble(parts[3]);
-                    Point next = new Point(px, py);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
+                switch (parts[0]) {
+                    case "POINT":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            double px = Double.parseDouble(parts[2]);
+                            double py = Double.parseDouble(parts[3]);
+                            Point next = new Point(px, py);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                        if (parts[i].equals("D")) {
-                            posD = i;
+                    case "CERCLE":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            int idCentre = Integer.parseInt(parts[2]);
+                            int idPointDef = Integer.parseInt(parts[3]);
+                            Point centre = (Point) ret.get(idCentre);
+                            Point def = (Point) ret.get(idPointDef);
+                            Cercle next = new Cercle(centre, def);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
-                        throw new Exception();
-                    }
-
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else if (parts[0].equals("CERCLE")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-                    int newId = Integer.parseInt(parts[1]);
-                    int idCentre = Integer.parseInt(parts[2]);
-                    int idPointDef = Integer.parseInt(parts[3]);
-                    Point centre = (Point) ret.get(idCentre);
-                    Point def = (Point) ret.get(idPointDef);
-                    Cercle next = new Cercle(centre, def);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
+                    case "DEMIDROITE":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            int idA = Integer.parseInt(parts[2]);
+                            int idB = Integer.parseInt(parts[3]);
+                            Point A = (Point) ret.get(idA);
+                            Point B = (Point) ret.get(idB);
+                            DemiDroite next = new DemiDroite(A, B);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                        if (parts[i].equals("D")) {
-                            posD = i;
+                    case "DROITE":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            int idA = Integer.parseInt(parts[2]);
+                            int idB = Integer.parseInt(parts[3]);
+                            Point A = (Point) ret.get(idA);
+                            Point B = (Point) ret.get(idB);
+                            Droite next = new Droite(A, B);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<Integer>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
-                        throw new Exception();
-                    }
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else if (parts[0].equals("DEMIDROITE")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-                    int newId = Integer.parseInt(parts[1]);
-                    int idA = Integer.parseInt(parts[2]);
-                    int idB = Integer.parseInt(parts[3]);
-                    Point A = (Point) ret.get(idA);
-                    Point B = (Point) ret.get(idB);
-                    DemiDroite next = new DemiDroite(A, B);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
+                    case "SEGMENT":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            int idA = Integer.parseInt(parts[2]);
+                            int idB = Integer.parseInt(parts[3]);
+                            Point A = (Point) ret.get(idA);
+                            Point B = (Point) ret.get(idB);
+                            Segment next = new Segment(A, B);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                        if (parts[i].equals("D")) {
-                            posD = i;
+                    case "VECTEUR":
+                        {
+                            if (parts.length < 6) {
+                                throw new Exception();
+                            }       int newId = Integer.parseInt(parts[1]);
+                            int idA = Integer.parseInt(parts[2]);
+                            int idB = Integer.parseInt(parts[3]);
+                            Point A = (Point) ret.get(idA);
+                            Point B = (Point) ret.get(idB);
+                            Vecteur next = new Vecteur(A, B);
+                            next.ID = newId;
+                            if (lastID <= newId) {
+                                lastID = newId + 1;
+                            }       int posC = -1;
+                            int posD = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("C")) {
+                                    posC = i;
+                                }
+                                if (parts[i].equals("D")) {
+                                    posD = i;
+                                }
+                            }       if (posC == -1 || posD != 4 || posC <= posD) {
+                                throw new Exception();
+                            }       if (!relationDependants.containsKey(newId)) {
+                                relationDependants.put(newId, new ArrayList<>());
+                            }       for (int i = posD + 1; i < posC; i++) {
+                                relationDependants.get(newId).add(Integer.parseInt(parts[i]));
+                            }       if (!relationContenus.containsKey(newId)) {
+                                relationContenus.put(newId, new ArrayList<>());
+                            }       for (int i = posC + 1; i < parts.length; i++) {
+                                relationContenus.get(newId).add(Integer.parseInt(parts[i]));
+                            }       ret.put(newId, next);
+                            break;
                         }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
+                    default:
                         throw new Exception();
-                    }
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else if (parts[0].equals("DROITE")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-                    int newId = Integer.parseInt(parts[1]);
-                    int idA = Integer.parseInt(parts[2]);
-                    int idB = Integer.parseInt(parts[3]);
-                    Point A = (Point) ret.get(idA);
-                    Point B = (Point) ret.get(idB);
-                    Droite next = new Droite(A, B);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
-                        }
-                        if (parts[i].equals("D")) {
-                            posD = i;
-                        }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
-                        throw new Exception();
-                    }
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else if (parts[0].equals("SEGMENT")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-                    int newId = Integer.parseInt(parts[1]);
-                    int idA = Integer.parseInt(parts[2]);
-                    int idB = Integer.parseInt(parts[3]);
-                    Point A = (Point) ret.get(idA);
-                    Point B = (Point) ret.get(idB);
-                    Segment next = new Segment(A, B);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
-                        }
-                        if (parts[i].equals("D")) {
-                            posD = i;
-                        }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
-                        throw new Exception();
-                    }
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else if (parts[0].equals("VECTEUR")) {
-                    if (parts.length < 6) {
-                        throw new Exception();
-                    }
-                    int newId = Integer.parseInt(parts[1]);
-                    int idA = Integer.parseInt(parts[2]);
-                    int idB = Integer.parseInt(parts[3]);
-                    Point A = (Point) ret.get(idA);
-                    Point B = (Point) ret.get(idB);
-                    Vecteur next = new Vecteur(A, B);
-                    next.ID = newId;
-                    if (lastID <= newId) {
-                        lastID = newId + 1;
-                    }
-                    int posC = -1;
-                    int posD = -1;
-                    for (int i = 0; i < parts.length; i++) {
-                        if (parts[i].equals("C")) {
-                            posC = i;
-                        }
-                        if (parts[i].equals("D")) {
-                            posD = i;
-                        }
-                    }
-                    if (posC == -1 || posD != 4 || posC <= posD) {
-                        throw new Exception();
-                    }
-                    if (!relationDependants.containsKey(newId)) {
-                        relationDependants.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posD + 1; i < posC; i++) {
-                        relationDependants.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-
-                    if (!relationContenus.containsKey(newId)) {
-                        relationContenus.put(newId, new ArrayList<Integer>());
-                    }
-                    for (int i = posC + 1; i < parts.length; i++) {
-                        relationContenus.get(newId).add(Integer.parseInt(parts[i]));
-                    }
-                    ret.put(newId, next);
-                } else {
-                    throw new Exception();
                 }
 
             } else {
