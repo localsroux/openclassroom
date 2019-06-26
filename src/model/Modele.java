@@ -38,16 +38,15 @@ public class Modele {
 
         if (e != null) {
             ret.add(e);
-            for (ElementGeometrique d : ensemble.values()) {
+            ensemble.values().forEach((d) -> {
                 d.getDependants().remove(i);
-            }
+            });
             List<Integer> toRemove = e.getDependants();
-            for (Integer r : toRemove) {
-                List<ElementGeometrique> dep = this.remove(r);
-                for (ElementGeometrique d : dep) {
+            toRemove.stream().map((r) -> this.remove(r)).forEachOrdered((dep) -> {
+                dep.forEach((d) -> {
                     ret.add(d);
-                }
-            }
+                });
+            });
         }
         return ret;
     }

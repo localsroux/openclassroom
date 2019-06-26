@@ -30,9 +30,9 @@ public class Segment extends ElementGeometrique {
     @Override
     public void move(double dx, double dy) {
 
-        for (Integer e : contenus.keySet()) {
+        contenus.keySet().forEach((e) -> {
             contenus.get(e).move(dx, dy);
-        }
+        });
     }
 
     @Override
@@ -171,13 +171,9 @@ public class Segment extends ElementGeometrique {
     @Override
     public String toString() {
         String ret = "SEGMENT " + String.valueOf(ID) + " " + String.valueOf(A.ID) + " " + String.valueOf(B.ID) + " D ";
-        for (Integer i : dependants) {
-            ret += i.toString() + " ";
-        }
+        ret = dependants.stream().map((i) -> i.toString() + " ").reduce(ret, String::concat);
         ret += "C";
-        for (Integer i : contenus.keySet()) {
-            ret += " " + i.toString();
-        }
+        ret = contenus.keySet().stream().map((i) -> " " + i.toString()).reduce(ret, String::concat);
         return ret;
     }
 

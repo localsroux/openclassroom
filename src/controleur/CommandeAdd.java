@@ -21,15 +21,15 @@ public class CommandeAdd extends Commande {
 
     @Override
     public void execute(Modele m) {
-        for (ElementGeometrique e : toAdd) {
+        toAdd.forEach((e) -> {
             m.add(e);
-        }
+        });
     }
 
     @Override
     public void undo(Modele m) {
-        for (ElementGeometrique e : toAdd) {
+        toAdd.forEach((e) -> {
             m.remove(e.getID());
-        }
+        });
     }
 }

@@ -4,8 +4,7 @@
  */
 package model;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.function.Consumer;
 
 /**
  *
@@ -28,9 +27,9 @@ public class Cercle extends ElementGeometrique {
 
     @Override
     public void move(double dx, double dy) {
-        for (Integer e : contenus.keySet()) {
+        contenus.keySet().forEach((Integer e) -> {
             contenus.get(e).move(dx, dy);
-        }
+        });
     }
 
     @Override
@@ -150,13 +149,9 @@ public class Cercle extends ElementGeometrique {
     @Override
     public String toString() {
         String ret = "CERCLE " + String.valueOf(ID) + " " + String.valueOf(mycentre.ID) + " " + String.valueOf(pointDef.ID) + " D ";
-        for (Integer i : dependants) {
-            ret += i.toString() + " ";
-        }
+        ret = dependants.stream().map((i) -> i.toString() + " ").reduce(ret, String::concat);
         ret += "C";
-        for (Integer i : contenus.keySet()) {
-            ret += " " + i.toString();
-        }
+        ret = contenus.keySet().stream().map((i) -> " " + i.toString()).reduce(ret, String::concat);
         return ret;
     }
 

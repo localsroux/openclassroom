@@ -358,10 +358,12 @@ public abstract class ElementGeometrique {
 
             line = file.readLine();
         }
-        for (Integer e : ret.keySet()) {
+        ret.keySet().stream().map((e) -> {
             ret.get(e).contenus.clear();
+            return e;
+        }).forEachOrdered((e) -> {
             ret.get(e).dependants.clear();
-        }
+        });
         for (Integer e : relationContenus.keySet()) {
             for (Integer c : relationContenus.get(e)) {
                 if (!ret.keySet().contains(c)) {

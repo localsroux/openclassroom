@@ -22,15 +22,15 @@ public class CommandeSuppr extends Commande {
 
     @Override
     public void execute(Modele m) {
-        for (ElementGeometrique e : remove) {
+        remove.forEach((e) -> {
             m.remove(e.getID());
-        }
+        });
     }
 
     @Override
     public void undo(Modele m) {
-        for (ElementGeometrique e : remove) {
+        remove.forEach((e) -> {
             m.add(e);
-        }
+        });
     }
 }

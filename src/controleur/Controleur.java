@@ -238,11 +238,9 @@ public class Controleur {
                 if (!code_cand.isEmpty()) {
                     ElementGeometrique e = modele.get(code_cand.get(0)).symCentre(modele.get(Centre));
                     Map<Integer, ElementGeometrique> cont = e.getContenus();
-                    for (Integer d : cont.keySet()) {
-                        if (!modele.getKey().contains(d)) {
-                            modele.add(cont.get(d));
-                        }
-                    }
+                    cont.keySet().stream().filter((d) -> (!modele.getKey().contains(d))).forEachOrdered((d) -> {
+                        modele.add(cont.get(d));
+            });
                     modele.add(e);
                     List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
                     ld.add(modele.get(e.getID()));
@@ -267,11 +265,9 @@ public class Controleur {
                 if (!code_cand.isEmpty()) {
                     ElementGeometrique e = modele.get(code_cand.get(0)).symAx(modele.get(Axe));
                     Map<Integer, ElementGeometrique> cont = e.getContenus();
-                    for (Integer d : cont.keySet()) {
-                        if (!modele.getKey().contains(d)) {
-                            modele.add(cont.get(d));
-                        }
-                    }
+                    cont.keySet().stream().filter((d) -> (!modele.getKey().contains(d))).forEachOrdered((d) -> {
+                        modele.add(cont.get(d));
+            });
                     modele.add(e);
                     List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
                     ld.add(modele.get(e.getID()));
@@ -296,11 +292,9 @@ public class Controleur {
                 if (!code_cand.isEmpty()) {
                     ElementGeometrique e = modele.get(code_cand.get(0)).translate(modele.get(Vec));
                     Map<Integer, ElementGeometrique> cont = e.getContenus();
-                    for (Integer d : cont.keySet()) {
-                        if (!modele.getKey().contains(d)) {
-                            modele.add(cont.get(d));
-                        }
-                    }
+                    cont.keySet().stream().filter((d) -> (!modele.getKey().contains(d))).forEachOrdered((d) -> {
+                        modele.add(cont.get(d));
+            });
                     modele.add(e);
                     List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
                     ld.add(modele.get(e.getID()));
@@ -326,11 +320,9 @@ public class Controleur {
                     double angle = vue.getAngle();
                     ElementGeometrique e = modele.get(code_cand.get(0)).rotate(modele.get(Centre), -angle);
                     Map<Integer, ElementGeometrique> cont = e.getContenus();
-                    for (Integer d : cont.keySet()) {
-                        if (!modele.getKey().contains(d)) {
-                            modele.add(cont.get(d));
-                        }
-                    }
+                    cont.keySet().stream().filter((d) -> (!modele.getKey().contains(d))).forEachOrdered((d) -> {
+                        modele.add(cont.get(d));
+            });
                     modele.add(e);
                     List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
                     ld.add(modele.get(e.getID()));
@@ -356,11 +348,9 @@ public class Controleur {
                     double rap = vue.getRapport();
                     ElementGeometrique e = modele.get(code_cand.get(0)).homothetie(modele.get(Centre), rap);
                     Map<Integer, ElementGeometrique> cont = e.getContenus();
-                    for (Integer d : cont.keySet()) {
-                        if (!modele.getKey().contains(d)) {
-                            modele.add(cont.get(d));
-                        }
-                    }
+                    cont.keySet().stream().filter((d) -> (!modele.getKey().contains(d))).forEachOrdered((d) -> {
+                        modele.add(cont.get(d));
+            });
                     modele.add(e);
                     List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
                     ld.add(modele.get(e.getID()));
@@ -411,9 +401,9 @@ public class Controleur {
                 }
                 List<Integer> nbVec = modele.sommeVecteur(Vec, Vec2, Centre);
                 List<ElementGeometrique> ld = new ArrayList<ElementGeometrique>();
-                for (int n : nbVec) {
+                nbVec.forEach((n) -> {
                     ld.add(modele.get(n));
-                }
+        });
                 this.add(new CommandeAdd(ld));
                 break;
             case DROITE_PAR_DROITE:
@@ -435,9 +425,9 @@ public class Controleur {
                         etat = Etat.DROITE_PAR_DROITE;
                         List<Integer> nbd = modele.droiteParallele(Axe, Centre);
                         List<ElementGeometrique> ldd = new ArrayList<ElementGeometrique>();
-                        for (Integer i : nbd) {
+                        nbd.forEach((i) -> {
                             ldd.add(modele.get(i));
-                        }
+                        });
                         this.add(new CommandeAdd(ldd));
                         break;
                     }
@@ -463,9 +453,9 @@ public class Controleur {
                         etat = Etat.DROITE_PERP_DROITE;
                         List<Integer> nbd = modele.droitePerpendiculaire(Axe, Centre);
                         List<ElementGeometrique> ldd = new ArrayList<ElementGeometrique>();
-                        for (Integer i : nbd) {
+                        nbd.forEach((i) -> {
                             ldd.add(modele.get(i));
-                        }
+                        });
                         this.add(new CommandeAdd(ldd));
                         break;
 
@@ -519,9 +509,9 @@ public class Controleur {
                         List<Integer> nbm = modele.mediatrice(PointA, PointB);
 
                         List<ElementGeometrique> ldd = new ArrayList<ElementGeometrique>();
-                        for (Integer i : nbm) {
+                        nbm.forEach((i) -> {
                             ldd.add(modele.get(i));
-                        }
+                        });
                         this.add(new CommandeAdd(ldd));
 
                         break;
@@ -559,10 +549,9 @@ public class Controleur {
                         etat = Etat.BISSECTRICE_POINT_A;
                         List<Integer> nbd = modele.bissectrice(PointA, PointB, PointC);
                         List<ElementGeometrique> ldd = new ArrayList<ElementGeometrique>();
-                        for (Integer i : nbd) {
+                        nbd.forEach((i) -> {
                             ldd.add(modele.get(i));
-
-                        }
+                        });
                         this.add(new CommandeAdd(ldd));
                         break;
 
